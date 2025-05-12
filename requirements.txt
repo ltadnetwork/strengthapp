@@ -3,7 +3,3 @@ pandas
 plotly
 fpdf
 kaleido
-io
-tempfile
-os
-plotly.graph_objects
