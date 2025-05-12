@@ -181,11 +181,14 @@ with tabs[0]:
 
 # Tab 2: Bodyweight Strength Test
 with tabs[1]:
+    # Session state for Tab2
+    if 'calc2' not in st.session_state:
+        st.session_state.calc2 = False
     c1, c2 = st.columns([1, 2])
     with c1:
         name2 = st.text_input("Name", key="bw_name")
         test_date2 = st.date_input("Test Date", key="bw_date")
-        sex = st.selectbox("Sex", ["M","F"], format_func=lambda x: "Male" if x=='M' else "Female")
+        sex = st.selectbox("Sex", ["M", "F"], format_func=lambda x: "Male" if x == 'M' else "Female")
         reps = [
             st.number_input("Squat reps (60s @10% BW)", 0, 500, 0),
             st.number_input("Pull-Up reps", 0, 500, 0),
@@ -195,19 +198,25 @@ with tabs[1]:
             st.number_input("Front Plank secs", 0, 1000, 0),
             st.number_input("Twist Sit-Up reps", 0, 500, 0)
         ]
-        calculate2 = st.button("Calculate Bodyweight Strength Test")
+        if st.button("Calculate Bodyweight Strength Test"):
+            st.session_state.calc2 = True
     with c2:
-        if calculate2:
+        if st.session_state.calc2:
             df2, fig2 = compute_tab2(reps, sex)
             st.plotly_chart(fig2, use_container_width=True)
             st.table(df2)
-            avg_leg = (df2.loc[3,'Score'] + df2.loc[4,'Score'])/2
-            total2 = df2.loc[[0,1,2,5,6],'Score'].sum() + avg_leg
-            result2 = "Pass" if total2>18 else "Fail"
-            st.table(pd.DataFrame({"Total Score":[round(total2,1)],"Result":[result2]}))
+            avg_leg = (df2.loc[3, 'Score'] + df2.loc[4, 'Score']) / 2
+            total2 = df2.loc[[0,1,2,5,6], 'Score'].sum() + avg_leg
+            result2 = "Pass" if total2 > 18 else "Fail"
+            st.table(pd.DataFrame({"Total Score": [round(total2,1)], "Result": [result2]}))
             info2 = {"Name": name2, "Test Date": test_date2.strftime('%Y-%m-%d'), "Sex": sex}
             pdf2 = create_pdf("Bodyweight Strength Test Report", info2, df2, fig2)
-            st.download_button("Download Bodyweight Test Report", pdf2, "bodyweight_strength_test_report.pdf", "application/pdf")
+            st.download_button(
+                "Download Bodyweight Strength Test Report",
+                pdf2,
+                "bodyweight_strength_test_report.pdf",
+                "application/pdf"
+            )
     _, col_logo2 = st.columns([10,1])
     with col_logo2:
         st.image(logo_path, width=100)
