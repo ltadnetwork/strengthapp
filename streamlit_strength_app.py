@@ -13,7 +13,9 @@ logo_path = "logo.png"
 st.set_page_config(page_title="Youth Athlete Training System - Strength Assessment App", layout="wide")
 col_logo, col_title = st.columns([1, 5])
 with col_logo:
-    st.image(logo_path, width=100)
+    # Display logo if available
+    if os.path.exists(logo_path):
+        st.image(logo_path, width=100)
 with col_title:
     st.title("Youth Athlete Training System - Strength Assessment App")
 
