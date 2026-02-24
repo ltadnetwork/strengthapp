@@ -52,7 +52,7 @@ def compute_tab1(vals):
         theta=df1['Exercise'].tolist() + [df1['Exercise'][0]],
         fill='toself', mode='lines+markers'
     ))
-    fig1.update_layout(polar=dict(radialaxis=dict(range=[0,5])), showlegend=False, height=600)
+    fig1.update_layout(polar=dict(radialaxis=dict(range=[0,5]), angularaxis=dict(tickfont=dict(size=14))), showlegend=False, height=600)
     return df1, fig1
 
 @st.cache_data
