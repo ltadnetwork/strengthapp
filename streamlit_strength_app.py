@@ -105,7 +105,7 @@ def make_radar_png(labels, values, max_val=5):
     angles = [n / float(N) * 2 * np.pi for n in range(N)]
     angles += angles[:1]
     vals = list(values) + [values[0]]
-    fig, ax = plt.subplots(figsize=(3.5, 3.5), subplot_kw=dict(polar=True))
+    fig, ax = plt.subplots(figsize=(2.75, 2.75), subplot_kw=dict(polar=True))
     ax.plot(angles, vals, linewidth=2, linestyle='solid', color='steelblue')
     ax.fill(angles, vals, alpha=0.25, color='steelblue')
     ax.set_xticks(angles[:-1])
