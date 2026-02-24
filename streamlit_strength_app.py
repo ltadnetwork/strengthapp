@@ -65,7 +65,7 @@ def compute_tab2(reps, sex):
         theta=df2['Exercise'].tolist() + [df2['Exercise'][0]],
         fill='toself', mode='lines+markers'
     ))
-    fig2.update_layout(polar=dict(radialaxis=dict(range=[0,5])), showlegend=False, height=600)
+    fig2.update_layout(polar=dict(radialaxis=dict(range=[0,5]), angularaxis=dict(tickfont=dict(size=14))), showlegend=False, height=600)
     return df2, fig2
 
 @st.cache_data
@@ -96,7 +96,7 @@ def compute_tab3(params):
         theta=lifts + [lifts[0]],
         fill='toself', mode='lines+markers'
     ))
-    fig3.update_layout(polar=dict(radialaxis=dict(visible=True)), showlegend=False, height=600)
+    fig3.update_layout(polar=dict(radialaxis=dict(visible=True), angularaxis=dict(tickfont=dict(size=14))), showlegend=False, height=600)
     return df3, fig3
 
 # Radar chart using matplotlib - no kaleido needed
