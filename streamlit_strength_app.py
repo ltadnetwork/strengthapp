@@ -120,14 +120,24 @@ def create_pdf(title, info: dict, df: pd.DataFrame, fig=None):
     for k, v in info.items():
         pdf.cell(0, 8, f"{k}: {v}", ln=True)
     pdf.ln(5)
-    # Embed chart
+    # Embed chart (requires kaleido: pip install kaleido)
     if fig:
-        tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
-        fig.write_image(tmp.name)
-        w = pdf.w - 2 * pdf.l_margin
-        pdf.image(tmp.name, x=pdf.l_margin, y=pdf.get_y(), w=w)
-        pdf.ln(w * 0.75)
-        tmp.close(); os.remove(tmp.name)
+        tmp = None
+        try:
+            tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
+            tmp.close()
+            fig.write_image(tmp.name)
+            w = pdf.w - 2 * pdf.l_margin
+            pdf.image(tmp.name, x=pdf.l_margin, y=pdf.get_y(), w=w)
+            pdf.ln(w * 0.75)
+        except Exception:
+            # kaleido not installed or chart export failed — skip chart image
+            pdf.set_font("Arial", 'I', 10)
+            pdf.cell(0, 8, "[Chart not available — install kaleido to include charts in PDF]", ln=True)
+            pdf.ln(3)
+        finally:
+            if tmp and os.path.exists(tmp.name):
+                os.remove(tmp.name)
     # Table header
     pdf.set_font("Arial", 'B', 12)
     ew = pdf.w - 2 * pdf.l_margin
@@ -141,7 +151,11 @@ def create_pdf(title, info: dict, df: pd.DataFrame, fig=None):
         for item in row:
             pdf.cell(cw, 8, str(item), border=1, align='C')
         pdf.ln()
-    return io.BytesIO(pdf.output(dest='S').encode('latin-1'))
+    # fpdf2 returns bytes from output(); older fpdf returns a str — handle both
+    raw = pdf.output(dest='S')
+    if isinstance(raw, (bytes, bytearray)):
+        return io.BytesIO(raw)
+    return io.BytesIO(raw.encode('latin-1'))
 
 # Create tabs
 tabs = st.tabs(["Movement Competency", "Bodyweight Strength Test", "Relative Strength Assessment"])
