@@ -177,9 +177,9 @@ with tabs[0]:
         age = st.number_input("Age (years)", min_value=0, value=18)
         pah = st.number_input("% Predicted Adult Height", min_value=0, value=100)
         vals = [
-            st.slider("Bodyweight Squat Tech (1-5)", 1, 5, 3),
+            st.slider("Squat Tech (1-5)", 1, 5, 3),
             st.slider("Push-Up Tech (1-5)", 1, 5, 3),
-            st.slider("Bodyweight Lunge Tech (1-5)", 1, 5, 3),
+            st.slider("Lunge Tech (1-5)", 1, 5, 3),
             st.slider("Inverted Row Tech (1-5)", 1, 5, 3),
             st.slider("Plank Tech (1-5)", 1, 5, 3),
             st.slider("Side Plank Tech (1-5)", 1, 5, 3)
@@ -192,7 +192,7 @@ with tabs[0]:
             st.plotly_chart(fig1, use_container_width=True)
             st.table(df1)
             info1 = {"Athlete": name, "Test Date": test_date.strftime('%Y-%m-%d'), "Age": f"{age} yrs", "% PAH": f"{pah}%"}
-            labels1 = ["Bodyweight Squat","Push-Up","Bodyweight Lunge","Inverted Row","Plank","Side Plank"]
+            labels1 = ["Squat","Push-Up","Lunge","Inverted Row","Plank","Side Plank"]
             pdf1 = create_pdf("Movement Competency Report", info1, df1, chart_labels=labels1, chart_values=vals, max_val=5)
             st.download_button("Download Movement Competency Report", pdf1, "movement_competency_report.pdf", "application/pdf")
     _, col_logo1 = st.columns([10,1])
