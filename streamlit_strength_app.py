@@ -14,13 +14,13 @@ import matplotlib.pyplot as plt
 logo_path = "logo.png"
 
 # Configure page and header
-st.set_page_config(page_title="Youth Strength Assessment App", layout="wide")
+st.set_page_config(page_title="Youth Strength Training Assessment App", layout="wide")
 col_logo, col_title = st.columns([1, 5])
 with col_logo:
     if os.path.exists(logo_path):
         st.image(logo_path, width=100)
 with col_title:
-    st.title("Youth Athlete Training System - Strength Assessment App")
+    st.title("Youth Strength Training Assessment App")
 
 # Scoring thresholds (for Tab 2)
 thresholds = {
