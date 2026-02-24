@@ -105,13 +105,13 @@ def make_radar_png(labels, values, max_val=5):
     angles = [n / float(N) * 2 * np.pi for n in range(N)]
     angles += angles[:1]
     vals = list(values) + [values[0]]
-    fig, ax = plt.subplots(figsize=(2.75, 2.75), subplot_kw=dict(polar=True))
+    fig, ax = plt.subplots(figsize=(3, 3), subplot_kw=dict(polar=True))
     ax.plot(angles, vals, linewidth=2, linestyle='solid', color='steelblue')
     ax.fill(angles, vals, alpha=0.25, color='steelblue')
     ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(labels, size=8)
+    ax.set_xticklabels(labels, size=6)
     ax.set_ylim(0, max_val)
-    ax.yaxis.set_tick_params(labelsize=7)
+    ax.yaxis.set_tick_params(labelsize=6)
     tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
     plt.savefig(tmp.name, bbox_inches='tight', dpi=150)
     plt.close(fig)
