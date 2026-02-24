@@ -105,7 +105,7 @@ def make_radar_png(labels, values, max_val=5):
     angles = [n / float(N) * 2 * np.pi for n in range(N)]
     angles += angles[:1]
     vals = list(values) + [values[0]]
-    fig, ax = plt.subplots(figsize=(3, 3), subplot_kw=dict(polar=True))
+    fig, ax = plt.subplots(figsize=(2.75, 2.75), subplot_kw=dict(polar=True))
     ax.plot(angles, vals, linewidth=2, linestyle='solid', color='steelblue')
     ax.fill(angles, vals, alpha=0.25, color='steelblue')
     ax.set_xticks(angles[:-1])
@@ -141,7 +141,7 @@ def create_pdf(title, info: dict, df: pd.DataFrame, chart_labels=None, chart_val
             tmp_path = make_radar_png(chart_labels, chart_values, max_val)
             w = pdf.w - 2 * pdf.l_margin
             pdf.image(tmp_path, x=pdf.l_margin, y=pdf.get_y(), w=w)
-            pdf.ln(w * 0.75)
+            pdf.ln(w * 1.0)
         except Exception:
             pass
         finally:
