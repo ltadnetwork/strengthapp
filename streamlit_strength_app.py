@@ -43,7 +43,7 @@ def score_value(exercise, val, sex):
 @st.cache_data
 def compute_tab1(vals):
     df1 = pd.DataFrame({
-        "Exercise": ["Bodyweight Squat","Push-Up","Bodyweight Lunge","Inverted Row","Plank","Side Plank"],
+        "Exercise": ["Squat","Push-Up","Lunge","Inverted Row","Plank","Side Plank"],,
         "Technique": vals
     })
     fig1 = go.Figure()
