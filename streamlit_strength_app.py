@@ -133,7 +133,7 @@ def create_pdf(title, info: dict, df: pd.DataFrame, fig=None):
         except Exception:
             # kaleido not installed or chart export failed — skip chart image
             pdf.set_font("Arial", 'I', 10)
-            pdf.cell(0, 8, "[Chart not available — install kaleido to include charts in PDF]", ln=True)
+            pdf.cell(0, 8, "[Chart not available - install kaleido to include charts in PDF]", ln=True)
             pdf.ln(3)
         finally:
             if tmp and os.path.exists(tmp.name):
