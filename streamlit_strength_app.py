@@ -110,7 +110,7 @@ def make_radar_png(labels, values, max_val=5):
     ax.fill(angles, vals, alpha=0.25, color='steelblue')
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(labels, size=6)
-    ax.tick_params(axis='x', pad=15)
+    ax.tick_params(axis='x', pad=10)
     ax.set_ylim(0, max_val)
     ax.yaxis.set_tick_params(labelsize=6)
     tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
