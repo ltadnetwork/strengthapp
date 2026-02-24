@@ -168,8 +168,6 @@ tabs = st.tabs(["Movement Competency", "Bodyweight Strength Test", "Relative Str
 
 # Tab 1: Movement Competency
 with tabs[0]:
-    if 'calc1' not in st.session_state:
-        st.session_state.calc1 = False
     c1, c2 = st.columns([1, 2])
     with c1:
         name = st.text_input("Athlete Name")
@@ -184,17 +182,14 @@ with tabs[0]:
             st.slider("Plank Tech (1-5)", 1, 5, 3),
             st.slider("Side Plank Tech (1-5)", 1, 5, 3)
         ]
-        if st.button("Calculate Movement Competency"):
-            st.session_state.calc1 = True
     with c2:
-        if st.session_state.calc1:
-            df1, fig1 = compute_tab1(vals)
-            st.plotly_chart(fig1, use_container_width=True)
-            st.table(df1)
-            info1 = {"Athlete": name, "Test Date": test_date.strftime('%Y-%m-%d'), "Age": f"{age} yrs", "% PAH": f"{pah}%"}
-            labels1 = ["Squat","Push-Up","Lunge","Inverted Row","Plank","Side Plank"]
-            pdf1 = create_pdf("Movement Competency Report", info1, df1, chart_labels=labels1, chart_values=vals, max_val=5)
-            st.download_button("Download Movement Competency Report", pdf1, "movement_competency_report.pdf", "application/pdf")
+        df1, fig1 = compute_tab1(vals)
+        st.plotly_chart(fig1, use_container_width=True)
+        st.table(df1)
+        info1 = {"Athlete": name, "Test Date": test_date.strftime('%Y-%m-%d'), "Age": f"{age} yrs", "% PAH": f"{pah}%"}
+        labels1 = ["Squat","Push-Up","Lunge","Inverted Row","Plank","Side Plank"]
+        pdf1 = create_pdf("Movement Competency Report", info1, df1, chart_labels=labels1, chart_values=vals, max_val=5)
+        st.download_button("Download Movement Competency Report", pdf1, "movement_competency_report.pdf", "application/pdf")
     _, col_logo1 = st.columns([10,1])
     with col_logo1:
         if os.path.exists(logo_path):
@@ -202,8 +197,6 @@ with tabs[0]:
 
 # Tab 2: Bodyweight Strength Test
 with tabs[1]:
-    if 'calc2' not in st.session_state:
-        st.session_state.calc2 = False
     c1, c2 = st.columns([1, 2])
     with c1:
         name2 = st.text_input("Name", key="bw_name")
@@ -218,22 +211,19 @@ with tabs[1]:
             st.number_input("Front Plank secs", 0, 1000, 0),
             st.number_input("Twist Sit-Up reps", 0, 500, 0)
         ]
-        if st.button("Calculate Bodyweight Strength Test"):
-            st.session_state.calc2 = True
     with c2:
-        if st.session_state.calc2:
-            df2, fig2 = compute_tab2(reps, sex)
-            st.plotly_chart(fig2, use_container_width=True)
-            st.table(df2)
-            avg_leg = (df2.loc[3, 'Score'] + df2.loc[4, 'Score']) / 2
-            total2 = df2.loc[[0,1,2,5,6], 'Score'].sum() + avg_leg
-            result2 = "Pass" if total2 > 18 else "Fail"
-            st.table(pd.DataFrame({"Total Score": [round(total2,1)], "Result": [result2]}))
-            info2 = {"Name": name2, "Test Date": test_date2.strftime('%Y-%m-%d'), "Sex": sex}
-            labels2 = list(thresholds.keys())
-            scores2 = df2['Score'].tolist()
-            pdf2 = create_pdf("Bodyweight Strength Test Report", info2, df2, chart_labels=labels2, chart_values=scores2, max_val=5)
-            st.download_button("Download Bodyweight Strength Test Report", pdf2, "bodyweight_strength_test_report.pdf", "application/pdf")
+        df2, fig2 = compute_tab2(tuple(reps), sex)
+        st.plotly_chart(fig2, use_container_width=True)
+        st.table(df2)
+        avg_leg = (df2.loc[3, 'Score'] + df2.loc[4, 'Score']) / 2
+        total2 = df2.loc[[0,1,2,5,6], 'Score'].sum() + avg_leg
+        result2 = "Pass" if total2 > 18 else "Fail"
+        st.table(pd.DataFrame({"Total Score": [round(total2,1)], "Result": [result2]}))
+        info2 = {"Name": name2, "Test Date": test_date2.strftime('%Y-%m-%d'), "Sex": sex}
+        labels2 = list(thresholds.keys())
+        scores2 = df2['Score'].tolist()
+        pdf2 = create_pdf("Bodyweight Strength Test Report", info2, df2, chart_labels=labels2, chart_values=scores2, max_val=5)
+        st.download_button("Download Bodyweight Strength Test Report", pdf2, "bodyweight_strength_test_report.pdf", "application/pdf")
     _, col_logo2 = st.columns([10,1])
     with col_logo2:
         if os.path.exists(logo_path):
@@ -256,19 +246,17 @@ with tabs[2]:
         load_pc = st.number_input("Power Clean load (kg)", 0.0, 500.0, 80.0)
         reps_pu = st.number_input("Pull-Up reps", 0, 50, 5)
         load_pu = st.number_input("Pull up additional load (kg)", 0.0, 100.0, 0.0)
-        calculate3 = st.button("Calculate Relative Strength")
     with c2:
-        if calculate3:
-            params = (bw, reps_s, load_s, reps_b, load_b, reps_d, load_d, reps_pc, load_pc, reps_pu, load_pu)
-            df3, fig3 = compute_tab3(params)
-            st.plotly_chart(fig3, use_container_width=True)
-            st.table(df3)
-            info3 = {"Athlete": name3, "Test Date": test_date3.strftime('%Y-%m-%d'), "Body Mass": f"{bw} kg"}
-            labels3 = ["Squat","Bench","Deadlift","Power Clean","Pull-Up"]
-            ratios3 = df3['1RM/BW'].tolist()
-            max_val3 = max(ratios3) * 1.2 if any(r > 0 for r in ratios3) else 3
-            pdf3 = create_pdf("Relative Strength Report", info3, df3, chart_labels=labels3, chart_values=ratios3, max_val=max_val3)
-            st.download_button("Download Relative Strength Report", pdf3, "relative_strength_report.pdf", "application/pdf")
+        params = (bw, reps_s, load_s, reps_b, load_b, reps_d, load_d, reps_pc, load_pc, reps_pu, load_pu)
+        df3, fig3 = compute_tab3(params)
+        st.plotly_chart(fig3, use_container_width=True)
+        st.table(df3)
+        info3 = {"Athlete": name3, "Test Date": test_date3.strftime('%Y-%m-%d'), "Body Mass": f"{bw} kg"}
+        labels3 = ["Squat","Bench","Deadlift","Power Clean","Pull-Up"]
+        ratios3 = df3['1RM/BW'].tolist()
+        max_val3 = max(ratios3) * 1.2 if any(r > 0 for r in ratios3) else 3
+        pdf3 = create_pdf("Relative Strength Report", info3, df3, chart_labels=labels3, chart_values=ratios3, max_val=max_val3)
+        st.download_button("Download Relative Strength Report", pdf3, "relative_strength_report.pdf", "application/pdf")
     _, col_logo3 = st.columns([10,1])
     with col_logo3:
         if os.path.exists(logo_path):
