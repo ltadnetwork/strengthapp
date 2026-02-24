@@ -141,7 +141,7 @@ def create_pdf(title, info: dict, df: pd.DataFrame, chart_labels=None, chart_val
             tmp_path = make_radar_png(chart_labels, chart_values, max_val)
             w = pdf.w - 2 * pdf.l_margin
             pdf.image(tmp_path, x=pdf.l_margin, y=pdf.get_y(), w=w)
-            pdf.ln(w * 1.0)
+            pdf.ln(w * 0.8)
         except Exception:
             pass
         finally:
