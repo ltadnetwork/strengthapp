@@ -114,7 +114,7 @@ def make_radar_png(labels, values, max_val=5):
     ax.set_ylim(0, max_val)
     ax.yaxis.set_tick_params(labelsize=6)
     tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
-    plt.savefig(tmp.name, bbox_inches='tight', dpi=150)
+    plt.savefig(tmp.name, bbox_inches='tight', dpi=300)
     plt.close(fig)
     tmp.close()
     return tmp.name
