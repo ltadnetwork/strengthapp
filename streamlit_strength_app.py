@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 logo_path = "logo.png"
 
 # Configure page and header
-st.set_page_config(page_title="Youth Athlete Training System - Strength Assessment App", layout="wide")
+st.set_page_config(page_title="Youth Strength Assessment App", layout="wide")
 col_logo, col_title = st.columns([1, 5])
 with col_logo:
     if os.path.exists(logo_path):
