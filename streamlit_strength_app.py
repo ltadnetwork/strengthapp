@@ -386,31 +386,36 @@ def safe_str(text):
     return str(text).encode('latin-1', errors='replace').decode('latin-1')
 
 def make_radar_png(labels, values, max_val=5):
-    """Render a high-quality radar chart PNG for embedding in the PDF."""
+    """Render a high-quality perfectly circular radar chart PNG for the PDF."""
     N = len(labels)
     angles = [n / float(N) * 2 * np.pi for n in range(N)]
     angles += angles[:1]
     vals = list(values) + [values[0]]
 
-    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True), facecolor='#FFFFFF')
+    # Use a square figure with generous padding so labels aren't clipped
+    fig = plt.figure(figsize=(7, 7), facecolor='#FFFFFF')
+    # Place axes as a square in the centre of the figure
+    ax = fig.add_axes([0.15, 0.15, 0.70, 0.70], polar=True)
     ax.set_facecolor('#F7F9FC')
 
     # Fill & line
     ax.fill(angles, vals, alpha=0.20, color='#1D9E75')
     ax.plot(angles, vals, linewidth=2.5, linestyle='solid', color='#1D9E75')
-    ax.scatter(angles[:-1], vals[:-1], s=60, color='#1D9E75', zorder=5)
+    ax.scatter(angles[:-1], vals[:-1], s=70, color='#1D9E75', zorder=5)
 
     # Axis styling
     ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(labels, size=9, color='#0F1B34', fontweight='bold')
-    ax.tick_params(axis='x', pad=14)
+    ax.set_xticklabels(labels, size=10, color='#0F1B34', fontweight='bold')
+    ax.tick_params(axis='x', pad=16)
     ax.set_ylim(0, max_val)
-    ax.yaxis.set_tick_params(labelsize=7, colors='#9F9F9F')
+    ax.yaxis.set_tick_params(labelsize=8, colors='#9F9F9F')
     ax.spines['polar'].set_color('#CCCCCC')
     ax.grid(color='#DDDDDD', linewidth=0.8)
 
+    # Save at exact figure size — do NOT use bbox_inches='tight' as it
+    # can introduce asymmetric cropping that makes the circle look oval
     tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
-    plt.savefig(tmp.name, bbox_inches='tight', dpi=300, facecolor='#FFFFFF')
+    plt.savefig(tmp.name, dpi=300, facecolor='#FFFFFF')
     plt.close(fig)
     tmp.close()
     return tmp.name
