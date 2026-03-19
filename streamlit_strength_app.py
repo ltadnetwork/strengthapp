@@ -378,77 +378,104 @@ def make_radar(labels, values, color, max_val=5):
     fig.update_layout(**layout)
     return fig
 
-# ── Radar PNG for PDF ─────────────────────────────────────────────────────────
-def make_radar_png(labels, values, max_val=5):
-    N = len(labels)
-    angles = [n / float(N) * 2 * np.pi for n in range(N)]
-    angles += angles[:1]
-    vals = list(values) + [values[0]]
-    fig, ax = plt.subplots(figsize=(2.75, 2.75), subplot_kw=dict(polar=True),
-                           facecolor='#080F1E')
-    ax.set_facecolor('#0F1B34')
-    ax.plot(angles, vals, linewidth=2, linestyle='solid', color='#23FF00')
-    ax.fill(angles, vals, alpha=0.18, color='#23FF00')
-    ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(labels, size=6, color='white')
-    ax.tick_params(axis='x', pad=10)
-    ax.set_ylim(0, max_val)
-    ax.yaxis.set_tick_params(labelsize=6, colors='#9F9F9F')
-    ax.spines['polar'].set_color('rgba(255,255,255,0.1)')
-    ax.grid(color='rgba(255,255,255,0.07)')
-    tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
-    plt.savefig(tmp.name, bbox_inches='tight', dpi=300, facecolor='#080F1E')
-    plt.close(fig)
-    tmp.close()
-    return tmp.name
+
 
 # ── PDF generation ────────────────────────────────────────────────────────────
 def safe_str(text):
     """Encode text as latin-1 safe — replaces any character FPDF cannot handle."""
     return str(text).encode('latin-1', errors='replace').decode('latin-1')
 
+def make_radar_png(labels, values, max_val=5):
+    """Render a high-quality radar chart PNG for embedding in the PDF."""
+    N = len(labels)
+    angles = [n / float(N) * 2 * np.pi for n in range(N)]
+    angles += angles[:1]
+    vals = list(values) + [values[0]]
+
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True), facecolor='#FFFFFF')
+    ax.set_facecolor('#F7F9FC')
+
+    # Fill & line
+    ax.fill(angles, vals, alpha=0.20, color='#1D9E75')
+    ax.plot(angles, vals, linewidth=2.5, linestyle='solid', color='#1D9E75')
+    ax.scatter(angles[:-1], vals[:-1], s=60, color='#1D9E75', zorder=5)
+
+    # Axis styling
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels, size=9, color='#0F1B34', fontweight='bold')
+    ax.tick_params(axis='x', pad=14)
+    ax.set_ylim(0, max_val)
+    ax.yaxis.set_tick_params(labelsize=7, colors='#9F9F9F')
+    ax.spines['polar'].set_color('#CCCCCC')
+    ax.grid(color='#DDDDDD', linewidth=0.8)
+
+    tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
+    plt.savefig(tmp.name, bbox_inches='tight', dpi=300, facecolor='#FFFFFF')
+    plt.close(fig)
+    tmp.close()
+    return tmp.name
+
 def create_pdf(title, info: dict, df: pd.DataFrame, chart_labels=None, chart_values=None, max_val=5):
     pdf = FPDF()
     pdf.add_page()
+
+    # Logo (top-right)
     try:
-        logo_w = 30
+        logo_w = 28
         pdf.image(logo_path, x=pdf.w - pdf.r_margin - logo_w, y=pdf.t_margin, w=logo_w)
     except Exception:
         pass
-    pdf.set_font("Arial", 'B', 16)
-    pdf.set_text_color(35, 255, 0)
-    pdf.cell(0, 10, safe_str(title), ln=True, align='C')
-    pdf.ln(5)
-    pdf.set_font("Arial", '', 12)
-    pdf.set_text_color(200, 200, 200)
+
+    # Title
+    pdf.set_font("Arial", 'B', 18)
+    pdf.set_text_color(35, 180, 0)
+    pdf.cell(0, 12, safe_str(title), ln=True, align='C')
+    pdf.ln(4)
+
+    # Info block
+    pdf.set_font("Arial", '', 11)
+    pdf.set_text_color(80, 80, 80)
     for k, v in info.items():
-        pdf.cell(0, 8, safe_str(f"{k}: {v}"), ln=True)
-    pdf.ln(5)
+        pdf.cell(0, 7, safe_str(f"{k}: {v}"), ln=True)
+    pdf.ln(6)
+
+    # Radar chart — sized to fit cleanly on the page
     if chart_labels and chart_values:
         tmp_path = None
         try:
             tmp_path = make_radar_png(chart_labels, chart_values, max_val)
-            w = pdf.w - 2 * pdf.l_margin
-            pdf.image(tmp_path, x=pdf.l_margin, y=pdf.get_y(), w=w)
-            pdf.ln(w * 0.8)
-        except Exception:
+            # Use a fixed square size that fits nicely: 120mm
+            img_size = 120
+            x_pos = (pdf.w - img_size) / 2   # centre horizontally
+            y_before = pdf.get_y()
+            pdf.image(tmp_path, x=x_pos, y=y_before, w=img_size, h=img_size)
+            pdf.set_y(y_before + img_size + 6)  # move cursor below image
+        except Exception as e:
             pass
         finally:
             if tmp_path and os.path.exists(tmp_path):
                 os.remove(tmp_path)
+
+    # Table header — dark text on light background
     pdf.set_font("Arial", 'B', 11)
-    pdf.set_text_color(159, 159, 159)
+    pdf.set_text_color(20, 30, 60)
+    pdf.set_fill_color(230, 235, 245)
     ew = pdf.w - 2 * pdf.l_margin
     cw = ew / len(df.columns)
     for col in df.columns:
-        pdf.cell(cw, 8, safe_str(col), border=1, align='C')
+        pdf.cell(cw, 9, safe_str(col), border=1, align='C', fill=True)
     pdf.ln()
+
+    # Table rows — dark text on white / light-grey alternating rows
     pdf.set_font("Arial", '', 11)
-    pdf.set_text_color(255, 255, 255)
-    for _, row in df.iterrows():
+    for i, (_, row) in enumerate(df.iterrows()):
+        fill = i % 2 == 0
+        pdf.set_fill_color(247, 249, 252) if fill else pdf.set_fill_color(255, 255, 255)
+        pdf.set_text_color(20, 30, 60)
         for item in row:
-            pdf.cell(cw, 8, safe_str(item), border=1, align='C')
+            pdf.cell(cw, 8, safe_str(item), border=1, align='C', fill=True)
         pdf.ln()
+
     raw = pdf.output(dest='S')
     if isinstance(raw, (bytes, bytearray)):
         return io.BytesIO(raw)
