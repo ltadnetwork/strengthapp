@@ -353,9 +353,14 @@ PLOTLY_POLAR = dict(
     bgcolor="rgba(0,0,0,0)",
 )
 
-def make_radar(labels, values, color, max_val=5, fill_color=None):
-    if fill_color is None:
-        fill_color = color
+FILL_COLORS = {
+    "#23FF00": "rgba(35,255,0,0.18)",
+    "#7F77DD": "rgba(127,119,221,0.18)",
+    "#E8622A": "rgba(232,98,42,0.18)",
+}
+
+def make_radar(labels, values, color, max_val=5):
+    fill_color = FILL_COLORS.get(color, "rgba(35,255,0,0.18)")
     vals = list(values) + [values[0]]
     lbls = list(labels) + [labels[0]]
     fig = go.Figure()
@@ -364,7 +369,7 @@ def make_radar(labels, values, color, max_val=5, fill_color=None):
         fill='toself',
         mode='lines+markers',
         line=dict(color=color, width=2.5),
-        fillcolor=fill_color.replace(")", ",0.15)").replace("rgb", "rgba") if fill_color.startswith("rgb") else fill_color + "26",
+        fillcolor=fill_color,
         marker=dict(color=color, size=7),
     ))
     layout = dict(**PLOTLY_LAYOUT)
