@@ -605,7 +605,6 @@ with tab1:
     col_in, col_out = st.columns([1, 1.6], gap="large")
 
     with col_in:
-        st.markdown('<div class="input-panel">', unsafe_allow_html=True)
         st.markdown("""<div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;
                     font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
                     color:#9F9F9F;margin-bottom:16px;">Athlete Details</div>""",
@@ -632,7 +631,6 @@ with tab1:
             with cols_ex[1]:
                 st.markdown(f'<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:800;font-size:26px;color:#23FF00;text-align:center;padding-top:4px;">{v}</div>', unsafe_allow_html=True)
             vals.append(v)
-        st.markdown('</div>', unsafe_allow_html=True)
 
     with col_out:
         df1 = compute_tab1(tuple(vals))
@@ -696,7 +694,6 @@ with tab2:
     col_in2, col_out2 = st.columns([1, 1.6], gap="large")
 
     with col_in2:
-        st.markdown('<div class="input-panel">', unsafe_allow_html=True)
         st.markdown("""<div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;
                     font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
                     color:#9F9F9F;margin-bottom:16px;">Athlete Details</div>""",
@@ -723,7 +720,6 @@ with tab2:
             st.number_input("Front Plank (seconds)", 0, 1000, 0, key="bw_plank"),
             st.number_input("Twisting Sit-Up reps", 0, 500, 0, key="bw_su"),
         ]
-        st.markdown('</div>', unsafe_allow_html=True)
 
     with col_out2:
         df2 = compute_tab2(tuple(reps), sex)
@@ -811,7 +807,6 @@ with tab3:
     col_in3, col_out3 = st.columns([1, 1.6], gap="large")
 
     with col_in3:
-        st.markdown('<div class="input-panel">', unsafe_allow_html=True)
         st.markdown("""<div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;
                     font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
                     color:#9F9F9F;margin-bottom:16px;">Athlete Details</div>""",
@@ -853,7 +848,6 @@ with tab3:
                 l = st.number_input(label_l, 0.0, 500.0, defaults_load[i], key=lk)
             reps_vals.append(r)
             load_vals.append(l)
-        st.markdown('</div>', unsafe_allow_html=True)
 
     with col_out3:
         params3 = (bw,
