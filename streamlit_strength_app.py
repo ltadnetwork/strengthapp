@@ -117,19 +117,6 @@ st.markdown("""
   background: var(--green) !important;
   border-color: var(--green) !important;
 }
-/* Hide the min/max tick label row — target every known Streamlit selector */
-[data-testid="stSlider"] div[data-testid="stTickBar"],
-[data-testid="stSlider"] [data-testid="stTickBarItem"],
-[data-testid="stSlider"] div[class*="tickBar"],
-[data-testid="stSlider"] div[class*="TickBar"],
-[data-testid="stSlider"] > div > div > div > div:last-child > div > div,
-[data-testid="stSlider"] > label + div > div > div:nth-child(3),
-[data-testid="stSlider"] > label + div > div > div:last-child {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  overflow: hidden !important;
-}
 
 /* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
@@ -321,32 +308,10 @@ st.markdown("""
   color: #FFF !important;
 }
 
-/* ── Hide slider tick/None labels only ── */
-.stSlider [data-testid="stTickBar"] { display: none !important; }
+
 </style>
 """, unsafe_allow_html=True)
 
-# JS: remove any element whose sole visible text content is "None"
-st.markdown("""
-<script>
-(function removeNonePills() {
-  function clean() {
-    document.querySelectorAll('div[data-testid="stSlider"] *').forEach(el => {
-      if (el.children.length === 0 && el.textContent.trim() === 'None') {
-        el.style.display = 'none';
-      }
-    });
-  }
-  // Run immediately and after short delays to catch deferred renders
-  clean();
-  setTimeout(clean, 300);
-  setTimeout(clean, 800);
-  setTimeout(clean, 2000);
-  // Also watch for DOM mutations
-  new MutationObserver(clean).observe(document.body, { childList: true, subtree: true });
-})();
-</script>
-""", unsafe_allow_html=True)
 
 # ── Scoring thresholds ────────────────────────────────────────────────────────
 thresholds = {
@@ -660,7 +625,12 @@ with tab1:
         exercises_t1 = ["Squat", "Push-Up", "Lunge", "Inverted Row", "Plank", "Side Plank"]
         vals = []
         for ex in exercises_t1:
-            v = st.slider(ex, min_value=1, max_value=5, value=3, key=f"mc_{ex}")
+            cols_ex = st.columns([3, 1])
+            with cols_ex[0]:
+                st.markdown(f'<div style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:#9F9F9F;margin-bottom:2px;">{ex}</div>', unsafe_allow_html=True)
+                v = st.slider(" ", min_value=1, max_value=5, value=3, key=f"mc_{ex}", label_visibility="collapsed")
+            with cols_ex[1]:
+                st.markdown(f'<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:800;font-size:26px;color:#23FF00;text-align:center;padding-top:4px;">{v}</div>', unsafe_allow_html=True)
             vals.append(v)
         st.markdown('</div>', unsafe_allow_html=True)
 
