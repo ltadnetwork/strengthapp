@@ -113,14 +113,23 @@ st.markdown("""
 }
 
 /* ── Slider ── */
-/* Track fill (active) */
 [data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
   background: var(--green) !important;
   border-color: var(--green) !important;
 }
-/* Suppress only the None tick label bar, not the track */
-[data-testid="stSlider"] div[class*="tickBar"] { display: none !important; }
-[data-testid="stSlider"] div[data-testid="stTickBar"] { display: none !important; }
+/* Hide the min/max tick label row — target every known Streamlit selector */
+[data-testid="stSlider"] div[data-testid="stTickBar"],
+[data-testid="stSlider"] [data-testid="stTickBarItem"],
+[data-testid="stSlider"] div[class*="tickBar"],
+[data-testid="stSlider"] div[class*="TickBar"],
+[data-testid="stSlider"] > div > div > div > div:last-child > div > div,
+[data-testid="stSlider"] > label + div > div > div:nth-child(3),
+[data-testid="stSlider"] > label + div > div > div:last-child {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
 
 /* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
@@ -315,6 +324,28 @@ st.markdown("""
 /* ── Hide slider tick/None labels only ── */
 .stSlider [data-testid="stTickBar"] { display: none !important; }
 </style>
+""", unsafe_allow_html=True)
+
+# JS: remove any element whose sole visible text content is "None"
+st.markdown("""
+<script>
+(function removeNonePills() {
+  function clean() {
+    document.querySelectorAll('div[data-testid="stSlider"] *').forEach(el => {
+      if (el.children.length === 0 && el.textContent.trim() === 'None') {
+        el.style.display = 'none';
+      }
+    });
+  }
+  // Run immediately and after short delays to catch deferred renders
+  clean();
+  setTimeout(clean, 300);
+  setTimeout(clean, 800);
+  setTimeout(clean, 2000);
+  // Also watch for DOM mutations
+  new MutationObserver(clean).observe(document.body, { childList: true, subtree: true });
+})();
+</script>
 """, unsafe_allow_html=True)
 
 # ── Scoring thresholds ────────────────────────────────────────────────────────
