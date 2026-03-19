@@ -159,7 +159,7 @@ st.markdown("""
 }
 
 /* ── Buttons ── */
-[data-testid="stButton"] > button {
+.stButton > button {
   background: var(--green-dim) !important;
   border: 1.5px solid var(--green) !important;
   border-radius: 8px !important;
@@ -172,13 +172,13 @@ st.markdown("""
   padding: 8px 20px !important;
   transition: all 0.18s !important;
 }
-[data-testid="stButton"] > button:hover {
+.stButton > button:hover {
   background: var(--green) !important;
   color: var(--navy-dark) !important;
 }
 
 /* ── Download button ── */
-[data-testid="stDownloadButton"] > button {
+.stDownloadButton > button {
   background: var(--green-dim) !important;
   border: 1.5px solid var(--green) !important;
   border-radius: 8px !important;
@@ -189,7 +189,7 @@ st.markdown("""
   letter-spacing: 0.06em !important;
   text-transform: uppercase !important;
 }
-[data-testid="stDownloadButton"] > button:hover {
+.stDownloadButton > button:hover {
   background: var(--green) !important;
   color: var(--navy-dark) !important;
 }
@@ -302,15 +302,18 @@ st.markdown("""
 }
 
 /* ── Number input spinners ── */
-[data-testid="stNumberInput"] button {
+/* Number input spinners — explicitly unstyled so no pill bleed */
+.stNumberInput button {
   background: var(--navy-light) !important;
   border: 1px solid var(--border) !important;
   border-radius: 4px !important;
   color: #FFF !important;
   letter-spacing: 0 !important;
   text-transform: none !important;
-  padding: 4px 8px !important;
-  font-weight: normal !important;
+  font-family: inherit !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  padding: 2px 8px !important;
 }
 
 
@@ -627,7 +630,14 @@ with tab1:
                     color:#9F9F9F;margin:20px 0 12px;">Movement Scores</div>""",
                     unsafe_allow_html=True)
         exercises_t1 = ["Squat", "Push-Up", "Lunge", "Inverted Row", "Plank", "Side Plank"]
-        vals = [int(st.number_input(ex, min_value=1, max_value=5, value=3, step=1, key=f"mc_{ex}")) for ex in exercises_t1]
+        vals = [
+            st.slider("Squat", 1, 5, 3, key="mc_Squat"),
+            st.slider("Push-Up", 1, 5, 3, key="mc_Push-Up"),
+            st.slider("Lunge", 1, 5, 3, key="mc_Lunge"),
+            st.slider("Inverted Row", 1, 5, 3, key="mc_Inverted-Row"),
+            st.slider("Plank", 1, 5, 3, key="mc_Plank"),
+            st.slider("Side Plank", 1, 5, 3, key="mc_Side-Plank"),
+        ]
 
     with col_out:
         df1 = compute_tab1(tuple(vals))
