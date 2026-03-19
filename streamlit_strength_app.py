@@ -403,6 +403,10 @@ def make_radar_png(labels, values, max_val=5):
     return tmp.name
 
 # ── PDF generation ────────────────────────────────────────────────────────────
+def safe_str(text):
+    """Encode text as latin-1 safe — replaces any character FPDF cannot handle."""
+    return str(text).encode('latin-1', errors='replace').decode('latin-1')
+
 def create_pdf(title, info: dict, df: pd.DataFrame, chart_labels=None, chart_values=None, max_val=5):
     pdf = FPDF()
     pdf.add_page()
@@ -413,12 +417,12 @@ def create_pdf(title, info: dict, df: pd.DataFrame, chart_labels=None, chart_val
         pass
     pdf.set_font("Arial", 'B', 16)
     pdf.set_text_color(35, 255, 0)
-    pdf.cell(0, 10, title, ln=True, align='C')
+    pdf.cell(0, 10, safe_str(title), ln=True, align='C')
     pdf.ln(5)
     pdf.set_font("Arial", '', 12)
     pdf.set_text_color(200, 200, 200)
     for k, v in info.items():
-        pdf.cell(0, 8, f"{k}: {v}", ln=True)
+        pdf.cell(0, 8, safe_str(f"{k}: {v}"), ln=True)
     pdf.ln(5)
     if chart_labels and chart_values:
         tmp_path = None
@@ -437,13 +441,13 @@ def create_pdf(title, info: dict, df: pd.DataFrame, chart_labels=None, chart_val
     ew = pdf.w - 2 * pdf.l_margin
     cw = ew / len(df.columns)
     for col in df.columns:
-        pdf.cell(cw, 8, str(col), border=1, align='C')
+        pdf.cell(cw, 8, safe_str(col), border=1, align='C')
     pdf.ln()
     pdf.set_font("Arial", '', 11)
     pdf.set_text_color(255, 255, 255)
     for _, row in df.iterrows():
         for item in row:
-            pdf.cell(cw, 8, str(item), border=1, align='C')
+            pdf.cell(cw, 8, safe_str(item), border=1, align='C')
         pdf.ln()
     raw = pdf.output(dest='S')
     if isinstance(raw, (bytes, bytearray)):
