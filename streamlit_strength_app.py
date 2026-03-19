@@ -664,7 +664,7 @@ with tab1:
         }
         pdf1 = create_pdf("Movement Competency Report", info1, df1,
                           chart_labels=exercises_t1, chart_values=vals, max_val=5)
-        st.download_button("⬇ Download PDF Report", pdf1,
+        st.download_button("Download PDF Report", pdf1,
                            "movement_competency_report.pdf", "application/pdf",
                            key="dl_mc")
 
@@ -779,7 +779,7 @@ with tab2:
         }
         pdf2 = create_pdf("Bodyweight Strength Test Report", info2, df2,
                           chart_labels=labels2, chart_values=scores2, max_val=5)
-        st.download_button("⬇ Download PDF Report", pdf2,
+        st.download_button("Download PDF Report", pdf2,
                            "bodyweight_strength_test_report.pdf", "application/pdf",
                            key="dl_bw")
 
@@ -892,7 +892,7 @@ with tab3:
         }
         pdf3 = create_pdf("Relative Strength Report", info3, df3,
                           chart_labels=lifts3, chart_values=ratios3, max_val=round(max_val3,1))
-        st.download_button("⬇ Download PDF Report", pdf3,
+        st.download_button("Download PDF Report", pdf3,
                            "relative_strength_report.pdf", "application/pdf",
                            key="dl_rs")
 
