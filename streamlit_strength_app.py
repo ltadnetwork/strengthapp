@@ -159,7 +159,7 @@ st.markdown("""
 }
 
 /* ── Buttons ── */
-.stButton > button {
+[data-testid="stButton"] > button {
   background: var(--green-dim) !important;
   border: 1.5px solid var(--green) !important;
   border-radius: 8px !important;
@@ -172,7 +172,7 @@ st.markdown("""
   padding: 8px 20px !important;
   transition: all 0.18s !important;
 }
-.stButton > button:hover {
+[data-testid="stButton"] > button:hover {
   background: var(--green) !important;
   color: var(--navy-dark) !important;
 }
@@ -302,10 +302,15 @@ st.markdown("""
 }
 
 /* ── Number input spinners ── */
-.stNumberInput button {
+[data-testid="stNumberInput"] button {
   background: var(--navy-light) !important;
-  border-color: var(--border) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px !important;
   color: #FFF !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  padding: 4px 8px !important;
+  font-weight: normal !important;
 }
 
 
