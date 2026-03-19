@@ -178,7 +178,7 @@ st.markdown("""
 }
 
 /* ── Download button ── */
-.stDownloadButton > button {
+[data-testid="stDownloadButton"] > button {
   background: var(--green-dim) !important;
   border: 1.5px solid var(--green) !important;
   border-radius: 8px !important;
@@ -189,7 +189,7 @@ st.markdown("""
   letter-spacing: 0.06em !important;
   text-transform: uppercase !important;
 }
-.stDownloadButton > button:hover {
+[data-testid="stDownloadButton"] > button:hover {
   background: var(--green) !important;
   color: var(--navy-dark) !important;
 }
@@ -627,10 +627,7 @@ with tab1:
                     color:#9F9F9F;margin:20px 0 12px;">Movement Scores</div>""",
                     unsafe_allow_html=True)
         exercises_t1 = ["Squat", "Push-Up", "Lunge", "Inverted Row", "Plank", "Side Plank"]
-        vals = []
-        for ex in exercises_t1:
-            v = st.number_input(ex, min_value=1, max_value=5, value=3, step=1, key=f"mc_{ex}")
-            vals.append(v)
+        vals = [int(st.number_input(ex, min_value=1, max_value=5, value=3, step=1, key=f"mc_{ex}")) for ex in exercises_t1]
 
     with col_out:
         df1 = compute_tab1(tuple(vals))
