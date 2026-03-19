@@ -621,7 +621,7 @@ with tab1:
         exercises_t1 = ["Squat", "Push-Up", "Lunge", "Inverted Row", "Plank", "Side Plank"]
         vals = []
         for ex in exercises_t1:
-            v = st.slider(ex, 1, 5, 3, key=f"mc_{ex}")
+            v = st.slider(ex, 1, 5, 3, key=f"mc_{ex}", format="%d")
             vals.append(v)
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -635,7 +635,16 @@ with tab1:
                     font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
                     color:#9F9F9F;margin-bottom:8px;">Score Summary</div>""",
                     unsafe_allow_html=True)
-        st.table(df1)
+        _cols1 = df1.columns.tolist()
+        _rows1 = df1.values.tolist()
+        _hdr1 = "".join(f'<th style="padding:10px 14px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#9F9F9F;background:#1A2B4A;border-bottom:1px solid rgba(255,255,255,0.07);">{c}</th>' for c in _cols1)
+        _body1 = ""
+        for _i, _row in enumerate(_rows1):
+            _bg = "rgba(255,255,255,0.025)" if _i % 2 == 0 else "rgba(255,255,255,0.055)"
+            _cells = "".join(f'<td style="padding:10px 14px;font-size:13px;color:rgba(255,255,255,0.9);border-top:1px solid rgba(255,255,255,0.07);">{v}</td>' for v in _row)
+            _body1 += f'<tr style="background:{_bg}">{_cells}</tr>'
+        st.markdown(f'''<table style="width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);">
+          <thead><tr>{_hdr1}</tr></thead><tbody>{_body1}</tbody></table>''', unsafe_allow_html=True)
 
         # Download
         info1 = {
@@ -718,7 +727,16 @@ with tab2:
                     font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
                     color:#9F9F9F;margin-bottom:8px;">Score Summary</div>""",
                     unsafe_allow_html=True)
-        st.table(df2)
+        _cols2 = df2.columns.tolist()
+        _rows2 = df2.values.tolist()
+        _hdr2 = "".join(f'<th style="padding:10px 14px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#9F9F9F;background:#1A2B4A;border-bottom:1px solid rgba(255,255,255,0.07);">{c}</th>' for c in _cols2)
+        _body2 = ""
+        for _i, _row in enumerate(_rows2):
+            _bg = "rgba(255,255,255,0.025)" if _i % 2 == 0 else "rgba(255,255,255,0.055)"
+            _cells = "".join(f'<td style="padding:10px 14px;font-size:13px;color:rgba(255,255,255,0.9);border-top:1px solid rgba(255,255,255,0.07);">{v}</td>' for v in _row)
+            _body2 += f'<tr style="background:{_bg}">{_cells}</tr>'
+        st.markdown(f'''<table style="width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);">
+          <thead><tr>{_hdr2}</tr></thead><tbody>{_body2}</tbody></table>''', unsafe_allow_html=True)
 
         # Total & result
         avg_leg   = (df2.loc[3, 'Score'] + df2.loc[4, 'Score']) / 2
@@ -847,7 +865,16 @@ with tab3:
                     font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
                     color:#9F9F9F;margin-bottom:8px;">Strength Profile</div>""",
                     unsafe_allow_html=True)
-        st.table(df3)
+        _cols3 = df3.columns.tolist()
+        _rows3 = df3.values.tolist()
+        _hdr3 = "".join(f'<th style="padding:10px 14px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#9F9F9F;background:#1A2B4A;border-bottom:1px solid rgba(255,255,255,0.07);">{c}</th>' for c in _cols3)
+        _body3 = ""
+        for _i, _row in enumerate(_rows3):
+            _bg = "rgba(255,255,255,0.025)" if _i % 2 == 0 else "rgba(255,255,255,0.055)"
+            _cells = "".join(f'<td style="padding:10px 14px;font-size:13px;color:rgba(255,255,255,0.9);border-top:1px solid rgba(255,255,255,0.07);">{v}</td>' for v in _row)
+            _body3 += f'<tr style="background:{_bg}">{_cells}</tr>'
+        st.markdown(f'''<table style="width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);">
+          <thead><tr>{_hdr3}</tr></thead><tbody>{_body3}</tbody></table>''', unsafe_allow_html=True)
 
         info3 = {
             "Athlete": name3 or "—",
