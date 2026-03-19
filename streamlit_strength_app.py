@@ -624,12 +624,7 @@ with tab1:
         exercises_t1 = ["Squat", "Push-Up", "Lunge", "Inverted Row", "Plank", "Side Plank"]
         vals = []
         for ex in exercises_t1:
-            cols_ex = st.columns([3, 1])
-            with cols_ex[0]:
-                st.markdown(f'<div style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:#9F9F9F;margin-bottom:2px;">{ex}</div>', unsafe_allow_html=True)
-                v = st.slider(" ", min_value=1, max_value=5, value=3, key=f"mc_{ex}", label_visibility="collapsed")
-            with cols_ex[1]:
-                st.markdown(f'<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:800;font-size:26px;color:#23FF00;text-align:center;padding-top:4px;">{v}</div>', unsafe_allow_html=True)
+            v = st.number_input(ex, min_value=1, max_value=5, value=3, step=1, key=f"mc_{ex}")
             vals.append(v)
 
     with col_out:
