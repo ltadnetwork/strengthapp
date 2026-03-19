@@ -113,9 +113,14 @@ st.markdown("""
 }
 
 /* ── Slider ── */
-.stSlider .st-bq { background: var(--green) !important; }
-.stSlider .st-br { background: var(--navy-light) !important; }
-.stSlider [data-baseweb="slider"] [role="slider"] { background: var(--green) !important; border-color: var(--green) !important; }
+/* Track fill (active) */
+[data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
+  background: var(--green) !important;
+  border-color: var(--green) !important;
+}
+/* Suppress only the None tick label bar, not the track */
+[data-testid="stSlider"] div[class*="tickBar"] { display: none !important; }
+[data-testid="stSlider"] div[data-testid="stTickBar"] { display: none !important; }
 
 /* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
@@ -307,26 +312,8 @@ st.markdown("""
   color: #FFF !important;
 }
 
-/* ── Hide slider tick marks / datalist labels that render as "None" ── */
-.stSlider [data-testid="stTickBar"],
-.stSlider [data-testid="stTickBarItem"],
-.stSlider datalist,
-.stSlider datalist option,
-div[data-testid="stSlider"] > div > div > div:last-child > div,
-div[data-testid="stSlider"] div[style*="justify-content: space-between"] {
-  display: none !important;
-}
-
-/* Nuclear option — hide every direct child div of the slider track wrapper
-   except the thumb and fill (those use inline position styles) */
-div[data-testid="stSlider"] > div > div > div:nth-child(2) {
-  display: none !important;
-}
-
-/* Also hide the min/max label row that Streamlit 1.x renders */
-.stSlider > div > div > div > div:last-of-type {
-  display: none !important;
-}
+/* ── Hide slider tick/None labels only ── */
+.stSlider [data-testid="stTickBar"] { display: none !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -642,7 +629,7 @@ with tab1:
         exercises_t1 = ["Squat", "Push-Up", "Lunge", "Inverted Row", "Plank", "Side Plank"]
         vals = []
         for ex in exercises_t1:
-            v = st.select_slider(ex, options=[1, 2, 3, 4, 5], value=3, key=f"mc_{ex}")
+            v = st.slider(ex, min_value=1, max_value=5, value=3, key=f"mc_{ex}")
             vals.append(v)
         st.markdown('</div>', unsafe_allow_html=True)
 
